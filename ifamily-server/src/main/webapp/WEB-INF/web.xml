@@ -50,7 +50,6 @@
 
 	<servlet-mapping>
 		<servlet-name>Resteasy</servlet-name>
-		<!-- URL would be http://localhost:9095/services/helloservice/hello/toto -->
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 
