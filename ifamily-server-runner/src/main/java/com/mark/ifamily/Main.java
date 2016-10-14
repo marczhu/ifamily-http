@@ -17,12 +17,6 @@ public class Main {
         Server server = null;
         try {
             String uri = CONFIG_FILE_DEFAULT_URI;
-            if (args != null && args.length > 0) {
-                Options options = Options.getOptions(args);
-                if (options.get("config.file.uri") != null) {
-                    uri = (String)options.get("config.file.uri");
-                }
-            }
             LOGGER.info("Starting server...");
             ConfigFileLoader configFileLoader = ConfigFileLoader.newInstance(uri);
             server = new Server(configFileLoader.getInt("server.port"));
