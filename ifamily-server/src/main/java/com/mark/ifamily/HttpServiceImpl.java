@@ -10,6 +10,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ import static com.mark.ifamily.exception.HttpServiceException.*;
  */
 @Path("/ifamily")
 public class HttpServiceImpl implements HttpService {
-    static final Logger logger = LoggerFactory.getLogger(HttpServiceImpl.class);
+    static final Logger LOGGER = LoggerFactory.getLogger(HttpServiceImpl.class);
     private IpManagementService ipManagementService;
 
     @Context
@@ -33,8 +34,8 @@ public class HttpServiceImpl implements HttpService {
     @Produces("application/json")
     @Override
     public Response put(@QueryParam("key") String key) throws HttpServiceException {
-        if (key != null && logger.isDebugEnabled()) {
-            logger.debug(key.toString());
+        if (key != null && LOGGER.isDebugEnabled()) {
+            LOGGER.debug(key.toString());
         }
         Map<String, Object> map = new HashMap<String, Object>();
         try {
@@ -47,12 +48,12 @@ public class HttpServiceImpl implements HttpService {
             map.put("ip",ip);
             return Response.ok().entity(map).build();
         } catch (HttpServiceException e) {
-            logger.error("put failed!",e);
+            LOGGER.error("put failed!",e);
             map.put("error_code", e.getErrorCode());
             map.put("error_msg", e.getMessage());
             return Response.status(e.getStatus()).entity(map).build();
         } catch (Exception e) {
-            logger.error("put failed!",e);
+            LOGGER.error("put failed!",e);
             HttpServiceException exception = new HttpServiceException.InternalException(e);
             map.put("error_code", exception.getErrorCode());
             map.put("error_msg", exception.getMessage());
@@ -64,8 +65,8 @@ public class HttpServiceImpl implements HttpService {
     @Produces("application/json")
     @Override
     public Response get(@QueryParam("key") String key) throws HttpServiceException {
-        if (key != null && logger.isDebugEnabled()) {
-            logger.debug(key.toString());
+        if (key != null && LOGGER.isDebugEnabled()) {
+            LOGGER.debug(key.toString());
         }
         Map<String, Object> map = new HashMap<String, Object>();
         try {
@@ -76,12 +77,12 @@ public class HttpServiceImpl implements HttpService {
             map.put("ip",ip);
             return Response.ok().entity(map).build();
         } catch (HttpServiceException e) {
-            logger.error("get failed!",e);
+            LOGGER.error("get failed!",e);
             map.put("error_code", e.getErrorCode());
             map.put("error_msg", e.getMessage());
             return Response.status(e.getStatus()).entity(map).build();
         } catch (Exception e) {
-            logger.error("put failed!",e);
+            LOGGER.error("put failed!",e);
             HttpServiceException exception = new HttpServiceException.InternalException(e);
             map.put("error_code", exception.getErrorCode());
             map.put("error_msg", exception.getMessage());
@@ -99,7 +100,7 @@ public class HttpServiceImpl implements HttpService {
             map.put("list",ipList);
             return Response.ok().entity(map).build();
         } catch (Exception e) {
-            logger.error("list failed!",e);
+            LOGGER.error("list failed!",e);
             HttpServiceException exception = new HttpServiceException.InternalException(e);
             map.put("error_code", exception.getErrorCode());
             map.put("error_msg", exception.getMessage());
@@ -116,7 +117,7 @@ public class HttpServiceImpl implements HttpService {
             ipManagementService.clear();
             return Response.ok().entity(map).build();
         } catch (Exception e) {
-            logger.error("clear failed!",e);
+            LOGGER.error("clear failed!",e);
             HttpServiceException exception = new HttpServiceException.InternalException(e);
             map.put("error_code", exception.getErrorCode());
             map.put("error_msg", exception.getMessage());
@@ -128,6 +129,12 @@ public class HttpServiceImpl implements HttpService {
     }
 
     public static String getIpAddr(HttpServletRequest request) {
+        StringBuilder sb = new StringBuilder();
+        Enumeration<String> e = request.getHeaderNames();
+        while (e.hasMoreElements()) {
+            String name = e.nextElement();
+            sb.append(name).append(":").append(request.getHeader(name)).append(getLineSeparator());
+        }
         String ip = request.getHeader("x-forwarded-for");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("Proxy-Client-IP");
@@ -145,5 +152,15 @@ public class HttpServiceImpl implements HttpService {
             ip = ip.split(",")[0];
         }
         return ip;
+    }
+    private static String getLineSeparator(){
+        String lineSeparator = null;
+        try {
+            lineSeparator = java.security.AccessController.doPrivileged(
+                    new sun.security.action.GetPropertyAction("line.separator"));
+        } catch (Exception e) {
+            LOGGER.error("",e);
+        }
+        return lineSeparator;
     }
 }
