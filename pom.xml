@@ -17,12 +17,7 @@
         <module>ifamily-parent</module>
         <module>ifamily-server</module>
         <module>ifamily-server-runner</module>
-        <!--
         <module>ifamily-agent</module>
-		-->
-        <!--
-		<module>ifamily-client</module>
-		-->
     </modules>
 
 

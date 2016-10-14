@@ -135,23 +135,24 @@ public class HttpServiceImpl implements HttpService {
             String name = e.nextElement();
             sb.append(name).append(":").append(request.getHeader(name)).append(getLineSeparator());
         }
-        String ip = request.getHeader("x-forwarded-for");
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-        }
-        if (ip.equals("0:0:0:0:0:0:0:1")) {
-            ip = "localhost";
-        }
-        if (ip.split(",").length > 1) {
-            ip = ip.split(",")[0];
-        }
-        return ip;
+        return sb.toString();
+//        String ip = request.getHeader("x-forwarded-for");
+//        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+//            ip = request.getHeader("Proxy-Client-IP");
+//        }
+//        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+//            ip = request.getHeader("WL-Proxy-Client-IP");
+//        }
+//        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+//            ip = request.getRemoteAddr();
+//        }
+//        if (ip.equals("0:0:0:0:0:0:0:1")) {
+//            ip = "localhost";
+//        }
+//        if (ip.split(",").length > 1) {
+//            ip = ip.split(",")[0];
+//        }
+//        return ip;
     }
     private static String getLineSeparator(){
         String lineSeparator = null;
