@@ -97,6 +97,6 @@ public class CommandExecutor {
                 LOGGER.debug(EntityUtils.toString(entity));
             }
         }
-        return EntityUtils.toString(entity, Charset.forName("UTF-8"));
+        return EntityUtils.toString(entity, Charset.forName(CHAR_SET_NAME));
     }
 }
