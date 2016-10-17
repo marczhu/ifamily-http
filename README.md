@@ -10,5 +10,15 @@ http://127.0.0.1/ifamily/clear
 ```
 
 ifamily-server-runner 内嵌jetty容器，加载ifamily-server.war,目前还有日志问题未解决    
-ifamily-agent 发送ip  
-ifamily-client 获取ip  
+ifamily-agent 客户端，访问ifamily-server,启动方法:  
+bin/start.sh 定时发送put,使用配置文件中的默认key  
+bin/start.sh start key=xxx 定时发送put，使用指定的key  
+
+bin/start.sh put 执行put，使用配置文件中的默认key  
+bin/start.sh put key=xxx  执行put，使用指定的key  
+
+bin/start.sh get 执行get，使用配置文件中的默认key  
+bin/start.sh get key=xxx 执行get，使用指定的key  
+
+bin/start.sh list 执行list  
+bin/start.sh clear 执行clear  
