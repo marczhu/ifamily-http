@@ -6,6 +6,10 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.misc.Signal;
+import sun.misc.SignalHandler;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by mark.zhu on 2016/10/13.
@@ -25,6 +29,11 @@ public class Main {
             context.setWar(configFileLoader.getString("war.file.path"));
             server.setHandler(context);
             server.start();
+            try {
+                server.join();
+            } catch (InterruptedException e) {
+                LOGGER.error("", e);
+            }
         } catch (Exception e) {
             LOGGER.error("Server start failed!", e);
             try {
@@ -35,13 +44,17 @@ public class Main {
             } catch (Exception e1) {
                 LOGGER.error("Server stopped failed!",e1);
             }
-        }
-        try {
-            server.join();
-        } catch (InterruptedException e) {
-            LOGGER.error("", e);
+        }finally{
+            try {
+                server.stop();
+            } catch (Exception e) {
+                LOGGER.error("", e);
+                System.exit(-1);
+            }
+
         }
         LOGGER.info("Server is started!");
 
     }
+
 }
